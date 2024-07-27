@@ -1,0 +1,32 @@
+﻿{
+  "$schema": "https://raw.githubusercontent.com/bsmg/BSIPA-MetadataFileSchema/master/Schema.json",
+  "id": "LostToUnderswingCounter",
+  "name": "LostToUnderswingCounter",
+  "author": "Bela",
+  "version": "1.0.0",
+  "description": "Show how many points you lose to underswing!",
+  "gameVersion": "1.29.1",
+  "dependsOn": {
+    "BSIPA": "^4.2.0",
+    "Counters+": "^2.3.3",
+    "BeatSaberMarkupLanguage": "^1.6.10",
+    "SiraUtil": "^3.1.2"
+  },
+  "features": {
+    "CountersPlus.CustomCounter": {
+      "Name": "Lost To Underswing Counter",
+      "Description": "Show how many points you lose to underswing!",
+      "CounterLocation": "LostToUnderswingCounter.Counter.Counter",
+      "MultiplayerReady": true,
+      "BSML": {
+        "Resource": "LostToUnderswingCounter.Views.Configuration.bsml",
+        "Host": "LostToUnderswingCounter.Views.ConfigurationController",
+        "Icon": "LostToUnderswingCounter.Views.icon.png"
+      }
+    }
+  },
+  "loadAfter": [
+    "Counters+",
+    "BeatSaberMarkupLanguage"
+  ]
+}
