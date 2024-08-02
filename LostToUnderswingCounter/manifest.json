@@ -19,7 +19,7 @@
       "CounterLocation": "LostToUnderswingCounter.Counter.Counter",
       "MultiplayerReady": true,
       "BSML": {
-        "Resource": "LostToUnderswingCounter.Views.Configuration.bsml",
+        "Resource": "LostToUnderswingCounter.Views.config-bsml.bsml",
         "Host": "LostToUnderswingCounter.Views.ConfigurationController",
         "Icon": "LostToUnderswingCounter.Views.icon.png"
       }

@@ -8,9 +8,16 @@ namespace LostToUnderswingCounter.Configuration
     {
         public static PluginConfig Instance { get; set; }
 
-        public virtual bool seperateHands { get; set; } = true;
+        public virtual styleType style { get; set; } = styleType.Both;
         public virtual int decimalPrecision { get; set; } = 2;
-
         public virtual bool inheritHandColors { get; set; } = true;
+        public virtual bool showDifference { get; set; } = true;
+
+        public enum styleType
+        {
+            Seperate,
+            Unified,
+            Both
+        }
     }
 }

@@ -145,9 +145,7 @@
   <ItemGroup>
     <None Include="Directory.Build.props" Condition="Exists('Directory.Build.props')" />
     <None Include="LostToUnderswingCounter.csproj.user" Condition="Exists('LostToUnderswingCounter.csproj.user')" />
-    <EmbeddedResource Include="Views\Configuration.bsml">
-      <DependentUpon>ConfigurationController.cs</DependentUpon>
-    </EmbeddedResource>
+    <EmbeddedResource Include="Views\config-bsml.bsml" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="BeatSaberModdingTools.Tasks">

@@ -1,11 +1,5 @@
-﻿using CountersPlus.Counters.Interfaces;
-using LostToUnderswingCounter.Configuration;
-using System;
-using System.Collections.Generic;
+﻿using LostToUnderswingCounter.Configuration;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using Zenject;
@@ -22,14 +16,19 @@ namespace LostToUnderswingCounter.Counter
         private int currentScoreLeft = 0;
         private int currentScoreRight = 0;
 
+        private int immediateMaxPossibleLeftHandScore = 0;
+        private int immediateMaxPossibleRightHandScore = 0;
+
         [Inject] private readonly ScoreController scoreController;
-        [Inject] private readonly GameplayCoreSceneSetupData gameplayCoreSceneSetupData;
+        [Inject] private readonly RelativeScoreAndImmediateRankCounter relativeScoreController;
+        [InjectOptional] private readonly GameplayCoreSceneSetupData gameplayCoreSceneSetupData;
 
         private TMP_Text leftText;
         private TMP_Text rightText;
+        private TMP_Text unifiedText;
 
-        public override void CounterDestroy() 
-        { 
+        public override void CounterDestroy()
+        {
             scoreController.scoringForNoteFinishedEvent -= calculateAccuracy;
         }
 
@@ -39,46 +38,48 @@ namespace LostToUnderswingCounter.Counter
             label.text = "Underswing Loss";
             label.fontSize = 3;
 
-            Vector3 leftOffset = new Vector3(0f, -0.6f);
-            Vector3 rightOffset = new Vector3(-0.25f, -.6f);
+            Vector3 leftOffset = new Vector3(0.25f, -0.3f);
+            Vector3 rightOffset = new Vector3(-0.25f, -0.3f);
+            Vector3 unifiedOffset = new Vector3(0, -0.3f);
 
-            if (PluginConfig.Instance.seperateHands)
+            if (PluginConfig.Instance.style == PluginConfig.styleType.Both)
+                unifiedOffset = new Vector3(0, -0.6f);
+
+            if (PluginConfig.Instance.style == PluginConfig.styleType.Seperate || PluginConfig.Instance.style == PluginConfig.styleType.Both)
             {
-                leftOffset = new Vector3(.25f, -0.6f);
-
                 leftText = CanvasUtility.CreateTextFromSettings(Settings, leftOffset);
-                leftText.text = (-0).ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture);
+                leftText.text = $"-{0.ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}%";
                 leftText.alignment = TextAlignmentOptions.Left;
                 leftText.fontSize = 3;
 
                 rightText = CanvasUtility.CreateTextFromSettings(Settings, rightOffset);
-                rightText.text = (-0).ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture);
+                rightText.text = $"-{0.ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}%";
                 rightText.alignment = TextAlignmentOptions.Right;
                 rightText.fontSize = 3;
 
-                if (PluginConfig.Instance.inheritHandColors)
+                if (PluginConfig.Instance.inheritHandColors && gameplayCoreSceneSetupData != null)
                 {
                     leftText.color = gameplayCoreSceneSetupData.colorScheme.saberBColor;
                     rightText.color = gameplayCoreSceneSetupData.colorScheme.saberAColor;
                 }
             }
-            else
+
+            if (PluginConfig.Instance.style == PluginConfig.styleType.Unified || PluginConfig.Instance.style == PluginConfig.styleType.Both)
             {
-                leftText = CanvasUtility.CreateTextFromSettings(Settings, leftOffset);
-                leftText.text = (-0).ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture);
-                leftText.alignment= TextAlignmentOptions.Center;
-                leftText.fontSize = 4;
+                unifiedText = CanvasUtility.CreateTextFromSettings(Settings, unifiedOffset);
+                unifiedText.text = $"-{0.ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}%";
+                unifiedText.fontSize = 3;
             }
-            
 
             scoreController.scoringForNoteFinishedEvent += calculateAccuracy;
         }
 
         private void calculateAccuracy(ScoringElement element)
         {
-            
+
             if (!(element is GoodCutScoringElement goodcut)) return;
-            
+            if (element.noteData.colorType == ColorType.None) return;
+
 
             var goodScoreElement = (GoodCutScoringElement) element;
 
@@ -87,40 +88,62 @@ namespace LostToUnderswingCounter.Counter
             int accuracy = buffer.centerDistanceCutScore;
 
             currentScoreWithoutUnderswing += (accuracy + 100) * goodScoreElement.multiplier;
+
             switch (element.noteData.colorType)
             {
                 case ColorType.ColorB:
+                    immediateMaxPossibleLeftHandScore += 115 * goodScoreElement.maxMultiplier;
                     currentScoreLeft += goodScoreElement.cutScore * goodScoreElement.multiplier;
                     currentScoreWithoutUnderswingLeft += (accuracy + 100) * goodScoreElement.multiplier;
                     break;
                 case ColorType.ColorA:
+                    immediateMaxPossibleRightHandScore += 115 * goodScoreElement.maxMultiplier;
                     currentScoreRight += goodScoreElement.cutScore * goodScoreElement.multiplier;
                     currentScoreWithoutUnderswingRight += (accuracy + 100) * goodScoreElement.multiplier;
                     break;
             }
+
             updateText();
         }
 
         private void updateText()
         {
-            if (PluginConfig.Instance.seperateHands)
+            if (PluginConfig.Instance.style == PluginConfig.styleType.Seperate || PluginConfig.Instance.style == PluginConfig.styleType.Both)
             {
                 var pointsLostToUnderswingLeft = currentScoreWithoutUnderswingLeft - currentScoreLeft;
-                var percentLostToUnderswingLeft = ((float) pointsLostToUnderswingLeft / currentScoreLeft) * 100;
-                leftText.text = $"-{percentLostToUnderswingLeft.ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}%";
+                var percentLostToUnderswingLeft = ((float)pointsLostToUnderswingLeft / currentScoreLeft) * 100;
 
                 var pointsLostToUnderswingRight = currentScoreWithoutUnderswingRight - currentScoreRight;
                 var percentLostToUnderswingRight = ((float)pointsLostToUnderswingRight / currentScoreRight) * 100;
-                rightText.text = $"-{percentLostToUnderswingRight.ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}%";
 
-                return;
+                string leftString = $"-{percentLostToUnderswingLeft.ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}%";
+                string rightString = $"-{percentLostToUnderswingRight.ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}%";
+
+                if (!PluginConfig.Instance.showDifference)
+                {
+                    leftString = $"{(((float)currentScoreWithoutUnderswingLeft / immediateMaxPossibleLeftHandScore) * 100).ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}%";
+                    rightString = $"{((((float)currentScoreWithoutUnderswingRight / immediateMaxPossibleRightHandScore) * 100) + percentLostToUnderswingRight).ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}%";
+                }
+
+                leftText.text = leftString;
+                rightText.text = rightString;
             }
 
-            var pointsLostToUnderswing = currentScoreWithoutUnderswing - scoreController.multipliedScore;
+            if (PluginConfig.Instance.style == PluginConfig.styleType.Unified || PluginConfig.Instance.style == PluginConfig.styleType.Both)
+            {
+                var pointsLostToUnderswing = currentScoreWithoutUnderswing - scoreController.multipliedScore;
 
-            var percentLostToUnderswing = ((float) pointsLostToUnderswing / scoreController.multipliedScore) * 100;
+                var percentLostToUnderswing = ((float)pointsLostToUnderswing / scoreController.multipliedScore) * 100;
 
-            leftText.text = $"-{percentLostToUnderswing.ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}%";
+                string unifiedString = $"{(((float) currentScoreWithoutUnderswing / scoreController.immediateMaxPossibleMultipliedScore) * 100).ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}";
+
+                if (PluginConfig.Instance.showDifference)
+                {
+                    unifiedString = $"-{percentLostToUnderswing.ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}%";
+                }
+
+                unifiedText.text = unifiedString;
+            }
         }
     }
 }

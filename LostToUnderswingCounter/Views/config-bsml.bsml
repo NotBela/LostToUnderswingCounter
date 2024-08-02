@@ -1,0 +1,6 @@
+﻿<vertical spacing='1' horizontal-fit='PreferredSize' vertical-fit='PreferredSize'>
+	<list-setting text="Seperate Hand Values" value="displayStyleValue" apply-on-change="true" options="displayStyleOptions"/>
+	<increment-setting text="Decimal Precision" value="decimalPrecisionValue" apply-on-change="true" min="0" max="5" integer-only="true"/>
+	<bool-setting text="Change counter colors to saber colors" value="inheritSaberColorsValue" apply-on-change="true"/>
+	<bool-setting text="Show Difference" value="compareUnderswinglessToCurrentValue" apply-on-change="true"/>
+</vertical>
