@@ -4,7 +4,7 @@
   "name": "LostToUnderswingCounter",
   "author": "Bela",
   "version": "1.0.0",
-  "description": "Show how many points you lose to underswing!",
+  "description": "Show how much accuracy you lose to underswing!",
   "gameVersion": "1.29.1",
   "dependsOn": {
     "BSIPA": "^4.2.0",
@@ -18,6 +18,11 @@
       "Description": "Show how many points you lose to underswing!",
       "CounterLocation": "LostToUnderswingCounter.Counter.Counter",
       "MultiplayerReady": true,
+      "ConfigDefaults": {
+        "Enabled": true,
+        "Position": "AboveCombo",
+        "Distance": -1
+      },
       "BSML": {
         "Resource": "LostToUnderswingCounter.Views.config-bsml.bsml",
         "Host": "LostToUnderswingCounter.Views.ConfigurationController",
