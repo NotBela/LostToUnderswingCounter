@@ -18,9 +18,9 @@ namespace LostToUnderswingCounter.Counter
 
         private int immediateMaxPossibleLeftHandScore = 0;
         private int immediateMaxPossibleRightHandScore = 0;
+        private int immediateMaxPossibleScore => currentScoreLeft + currentScoreRight;
 
         [Inject] private readonly ScoreController scoreController;
-        [Inject] private readonly RelativeScoreAndImmediateRankCounter relativeScoreController;
         [InjectOptional] private readonly GameplayCoreSceneSetupData gameplayCoreSceneSetupData;
 
         private TMP_Text leftText;
@@ -80,6 +80,7 @@ namespace LostToUnderswingCounter.Counter
             if (!(element is GoodCutScoringElement goodcut)) return;
             if (element.noteData.colorType == ColorType.None) return;
 
+            if (element.noteData.scoringType != NoteData.ScoringType.Normal) return;
 
             var goodScoreElement = (GoodCutScoringElement) element;
 
@@ -89,15 +90,15 @@ namespace LostToUnderswingCounter.Counter
 
             currentScoreWithoutUnderswing += (accuracy + 100) * goodScoreElement.multiplier;
 
+            immediateMaxPossibleRightHandScore += 115 * goodScoreElement.maxMultiplier;
+
             switch (element.noteData.colorType)
             {
                 case ColorType.ColorB:
-                    immediateMaxPossibleLeftHandScore += 115 * goodScoreElement.maxMultiplier;
                     currentScoreLeft += goodScoreElement.cutScore * goodScoreElement.multiplier;
                     currentScoreWithoutUnderswingLeft += (accuracy + 100) * goodScoreElement.multiplier;
                     break;
                 case ColorType.ColorA:
-                    immediateMaxPossibleRightHandScore += 115 * goodScoreElement.maxMultiplier;
                     currentScoreRight += goodScoreElement.cutScore * goodScoreElement.multiplier;
                     currentScoreWithoutUnderswingRight += (accuracy + 100) * goodScoreElement.multiplier;
                     break;
@@ -131,11 +132,11 @@ namespace LostToUnderswingCounter.Counter
 
             if (PluginConfig.Instance.style == PluginConfig.styleType.Unified || PluginConfig.Instance.style == PluginConfig.styleType.Both)
             {
-                var pointsLostToUnderswing = currentScoreWithoutUnderswing - scoreController.multipliedScore;
+                var pointsLostToUnderswing = currentScoreWithoutUnderswing - immediateMaxPossibleScore;
 
-                var percentLostToUnderswing = ((float)pointsLostToUnderswing / scoreController.multipliedScore) * 100;
+                var percentLostToUnderswing = ((float)pointsLostToUnderswing / immediateMaxPossibleScore) * 100;
 
-                string unifiedString = $"{(((float) currentScoreWithoutUnderswing / scoreController.immediateMaxPossibleMultipliedScore) * 100).ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}";
+                string unifiedString = $"{(((float) currentScoreWithoutUnderswing / immediateMaxPossibleScore) * 100).ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}";
 
                 if (PluginConfig.Instance.showDifference)
                 {
