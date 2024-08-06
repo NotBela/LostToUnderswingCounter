@@ -28,9 +28,9 @@ namespace LostToUnderswingCounter.Views
                 switch (PluginConfig.Instance.style)
                 {
                     case PluginConfig.styleType.Seperate:
-                        return "Yes";
+                        return "Seperate";
                     case PluginConfig.styleType.Unified:
-                        return "No";
+                        return "Unified";
                     default:
                         return "Both";
                 }
