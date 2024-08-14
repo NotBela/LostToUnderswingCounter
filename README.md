@@ -17,7 +17,7 @@ Configuration options can be changed in the Counters+ menu.
   - False: Show what you would have if you had no underswing
     - If you had a 97.5% and lost .05% to underswing, the counter would show 97.55%
 
-# Dependancies
+# Dependencies
 - BSIPA
 - Counters+
 - SiraUtil
