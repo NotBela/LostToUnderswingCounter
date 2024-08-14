@@ -34,9 +34,12 @@ namespace LostToUnderswingCounter.Counter
 
         public override void CounterInit()
         {
-            var label = CanvasUtility.CreateTextFromSettings(Settings);
-            label.text = "Underswing Loss";
-            label.fontSize = 3;
+            if (PluginConfig.Instance.showHeaderText)
+            {
+                var label = CanvasUtility.CreateTextFromSettings(Settings);
+                label.text = "Underswing Loss";
+                label.fontSize = 3;
+            }
 
             Vector3 leftOffset = new Vector3(0.25f, -0.3f);
             Vector3 rightOffset = new Vector3(-0.25f, -0.3f);

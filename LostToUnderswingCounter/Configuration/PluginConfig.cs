@@ -12,7 +12,7 @@ namespace LostToUnderswingCounter.Configuration
         public virtual int decimalPrecision { get; set; } = 2;
         public virtual bool inheritHandColors { get; set; } = true;
         public virtual bool showDifference { get; set; } = true;
-
+        public virtual bool showHeaderText { get; set; } = true;
         public enum styleType
         {
             Seperate,

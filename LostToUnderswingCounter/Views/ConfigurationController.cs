@@ -61,5 +61,12 @@ namespace LostToUnderswingCounter.Views
             get => PluginConfig.Instance.inheritHandColors;
             set => PluginConfig.Instance.inheritHandColors = value;
         }
+
+        [UIValue("showCounterLabelValue")]
+        private bool showCounterLabelValue
+        {
+            get => PluginConfig.Instance.showHeaderText;
+            set => PluginConfig.Instance.showHeaderText = value;
+        }
     }
 }

@@ -3,7 +3,7 @@
   "id": "LostToUnderswingCounter",
   "name": "LostToUnderswingCounter",
   "author": "Bela",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Show how much accuracy you lose to underswing!",
   "gameVersion": "1.29.1",
   "dependsOn": {
