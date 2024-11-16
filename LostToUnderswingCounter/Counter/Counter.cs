@@ -57,6 +57,14 @@ namespace LostToUnderswingCounter.Counter
 
                 rightText = CanvasUtility.CreateTextFromSettings(Settings, rightOffset);
                 rightText.text = $"-{0.ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}%";
+
+                if (!PluginConfig.Instance.showDifference)
+                {
+                    rightText.text = $"{100.ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}%";
+                    leftText.text = $"{100.ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}%";
+                }
+
+
                 rightText.alignment = TextAlignmentOptions.Right;
                 rightText.fontSize = 3;
 
@@ -71,6 +79,9 @@ namespace LostToUnderswingCounter.Counter
             {
                 unifiedText = CanvasUtility.CreateTextFromSettings(Settings, unifiedOffset);
                 unifiedText.text = $"-{0.ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}%";
+
+                if (!PluginConfig.Instance.showDifference) unifiedText.text = $"{100.ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}%";
+
                 unifiedText.fontSize = 3;
             }
 
@@ -85,7 +96,7 @@ namespace LostToUnderswingCounter.Counter
 
             if (element.noteData.scoringType != NoteData.ScoringType.Normal) return;
 
-            var goodScoreElement = (GoodCutScoringElement) element;
+            var goodScoreElement = (GoodCutScoringElement)element;
 
             var buffer = goodScoreElement.cutScoreBuffer;
 
@@ -142,7 +153,7 @@ namespace LostToUnderswingCounter.Counter
                 string unifiedString = $"-{percentLostToUnderswing.ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}%";
                 if (!PluginConfig.Instance.showDifference)
                 {
-                    unifiedString = $"%{(((float)currentScoreWithoutUnderswing / scoreController.immediateMaxPossibleMultipliedScore) * 100).ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}";
+                    unifiedString = $"{(((float)currentScoreWithoutUnderswing / scoreController.immediateMaxPossibleMultipliedScore) * 100).ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}%";
                 }
 
                 unifiedText.text = unifiedString;
