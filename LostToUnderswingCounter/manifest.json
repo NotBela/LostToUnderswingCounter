@@ -21,7 +21,7 @@
       "ConfigDefaults": {
         "Enabled": true,
         "Position": "AboveCombo",
-        "Distance": -1
+        "Distance": 0
       },
       "BSML": {
         "Resource": "LostToUnderswingCounter.Views.config-bsml.bsml",
