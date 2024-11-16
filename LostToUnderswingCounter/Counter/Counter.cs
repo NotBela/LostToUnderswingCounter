@@ -18,11 +18,9 @@ namespace LostToUnderswingCounter.Counter
 
         private int immediateMaxPossibleLeftHandScore = 0;
         private int immediateMaxPossibleRightHandScore = 0;
-        private int immediateMaxPossibleScore => currentScoreLeft + currentScoreRight;
+        private int immediateScore => currentScoreLeft + currentScoreRight;
 
-#pragma warning disable CS0649 // Field 'Counter.scoreController' is never assigned to, and will always have its default value null
         [Inject] private readonly ScoreController scoreController;
-#pragma warning restore CS0649 // Field 'Counter.scoreController' is never assigned to, and will always have its default value null
         [InjectOptional] private readonly GameplayCoreSceneSetupData gameplayCoreSceneSetupData;
 
         private TMP_Text leftText;
@@ -95,17 +93,17 @@ namespace LostToUnderswingCounter.Counter
 
             currentScoreWithoutUnderswing += (accuracy + 100) * goodScoreElement.multiplier;
 
-            immediateMaxPossibleRightHandScore += 115 * goodScoreElement.maxMultiplier;
-
-            switch (element.noteData.colorType)
+            switch (goodScoreElement.noteData.colorType)
             {
                 case ColorType.ColorB:
                     currentScoreLeft += goodScoreElement.cutScore * goodScoreElement.multiplier;
                     currentScoreWithoutUnderswingLeft += (accuracy + 100) * goodScoreElement.multiplier;
+                    immediateMaxPossibleLeftHandScore += 115 * goodScoreElement.maxMultiplier;
                     break;
                 case ColorType.ColorA:
                     currentScoreRight += goodScoreElement.cutScore * goodScoreElement.multiplier;
                     currentScoreWithoutUnderswingRight += (accuracy + 100) * goodScoreElement.multiplier;
+                    immediateMaxPossibleRightHandScore += 115 * goodScoreElement.maxMultiplier;
                     break;
             }
 
@@ -121,13 +119,13 @@ namespace LostToUnderswingCounter.Counter
 
                 var pointsLostToUnderswingRight = currentScoreWithoutUnderswingRight - currentScoreRight;
                 var percentLostToUnderswingRight = ((float)pointsLostToUnderswingRight / currentScoreRight) * 100;
-
+                // WORKS PROPERLY DONT CHANGE EVER
                 string leftString = $"-{percentLostToUnderswingLeft.ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}%";
                 string rightString = $"-{percentLostToUnderswingRight.ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}%";
 
                 if (!PluginConfig.Instance.showDifference)
                 {
-                    leftString = $"{(((float)currentScoreWithoutUnderswingLeft / immediateMaxPossibleLeftHandScore) * 100).ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}%";
+                    leftString = $"{((((float)currentScoreWithoutUnderswingLeft / immediateMaxPossibleLeftHandScore) * 100) + percentLostToUnderswingLeft).ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}%";
                     rightString = $"{((((float)currentScoreWithoutUnderswingRight / immediateMaxPossibleRightHandScore) * 100) + percentLostToUnderswingRight).ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}%";
                 }
 
@@ -137,15 +135,14 @@ namespace LostToUnderswingCounter.Counter
 
             if (PluginConfig.Instance.style == PluginConfig.styleType.Unified || PluginConfig.Instance.style == PluginConfig.styleType.Both)
             {
-                var pointsLostToUnderswing = currentScoreWithoutUnderswing - immediateMaxPossibleScore;
+                var pointsLostToUnderswing = currentScoreWithoutUnderswing - scoreController.multipliedScore;
 
-                var percentLostToUnderswing = ((float)pointsLostToUnderswing / immediateMaxPossibleScore) * 100;
+                var percentLostToUnderswing = ((float)pointsLostToUnderswing / immediateScore) * 100;
 
-                string unifiedString = $"{(((float) currentScoreWithoutUnderswing / immediateMaxPossibleScore) * 100).ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}";
-
-                if (PluginConfig.Instance.showDifference)
+                string unifiedString = $"-{percentLostToUnderswing.ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}%";
+                if (!PluginConfig.Instance.showDifference)
                 {
-                    unifiedString = $"-{percentLostToUnderswing.ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}%";
+                    unifiedString = $"%{(((float)currentScoreWithoutUnderswing / scoreController.immediateMaxPossibleMultipliedScore) * 100).ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}";
                 }
 
                 unifiedText.text = unifiedString;
