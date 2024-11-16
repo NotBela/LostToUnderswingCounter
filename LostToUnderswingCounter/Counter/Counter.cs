@@ -20,7 +20,9 @@ namespace LostToUnderswingCounter.Counter
         private int immediateMaxPossibleRightHandScore = 0;
         private int immediateMaxPossibleScore => currentScoreLeft + currentScoreRight;
 
+#pragma warning disable CS0649 // Field 'Counter.scoreController' is never assigned to, and will always have its default value null
         [Inject] private readonly ScoreController scoreController;
+#pragma warning restore CS0649 // Field 'Counter.scoreController' is never assigned to, and will always have its default value null
         [InjectOptional] private readonly GameplayCoreSceneSetupData gameplayCoreSceneSetupData;
 
         private TMP_Text leftText;
