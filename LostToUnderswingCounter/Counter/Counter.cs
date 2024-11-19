@@ -1,5 +1,7 @@
-﻿using LostToUnderswingCounter.Configuration;
+﻿using System;
+using LostToUnderswingCounter.Configuration;
 using System.Globalization;
+using System.Windows.Forms;
 using TMPro;
 using UnityEngine;
 using Zenject;
@@ -87,34 +89,33 @@ namespace LostToUnderswingCounter.Counter
 
             scoreController.scoringForNoteFinishedEvent += calculateAccuracy;
         }
-
+        
         private void calculateAccuracy(ScoringElement element)
         {
 
-            if (!(element is GoodCutScoringElement goodcut)) return;
+            if (!(element is GoodCutScoringElement)) return;
             if (element.noteData.colorType == ColorType.None) return;
 
-            if (element.noteData.scoringType != NoteData.ScoringType.Normal) return;
+            var goodScoreElement = (GoodCutScoringElement) element;
 
-            var goodScoreElement = (GoodCutScoringElement)element;
-
-            var buffer = goodScoreElement.cutScoreBuffer;
-
-            int accuracy = buffer.centerDistanceCutScore;
-
-            currentScoreWithoutUnderswing += (accuracy + 100) * goodScoreElement.multiplier;
-
+            int lastNoteCutScoreIfMaxSwingAngle = goodScoreElement.cutScoreBuffer.noteScoreDefinition.maxBeforeCutScore + 
+                                                  goodScoreElement.cutScoreBuffer.noteScoreDefinition.maxAfterCutScore +
+                                                  goodScoreElement.cutScoreBuffer.centerDistanceCutScore;
+            if (goodScoreElement.noteData.scoringType == NoteData.ScoringType.BurstSliderElement) lastNoteCutScoreIfMaxSwingAngle = 20;
+            
+            currentScoreWithoutUnderswing += lastNoteCutScoreIfMaxSwingAngle * goodScoreElement.multiplier;
+            
             switch (goodScoreElement.noteData.colorType)
             {
                 case ColorType.ColorB:
                     currentScoreLeft += goodScoreElement.cutScore * goodScoreElement.multiplier;
-                    currentScoreWithoutUnderswingLeft += (accuracy + 100) * goodScoreElement.multiplier;
-                    immediateMaxPossibleLeftHandScore += 115 * goodScoreElement.maxMultiplier;
+                    currentScoreWithoutUnderswingLeft += lastNoteCutScoreIfMaxSwingAngle * goodScoreElement.multiplier;
+                    immediateMaxPossibleLeftHandScore += goodScoreElement.maxPossibleCutScore * goodScoreElement.maxMultiplier;
                     break;
                 case ColorType.ColorA:
                     currentScoreRight += goodScoreElement.cutScore * goodScoreElement.multiplier;
-                    currentScoreWithoutUnderswingRight += (accuracy + 100) * goodScoreElement.multiplier;
-                    immediateMaxPossibleRightHandScore += 115 * goodScoreElement.maxMultiplier;
+                    currentScoreWithoutUnderswingRight += lastNoteCutScoreIfMaxSwingAngle * goodScoreElement.multiplier;
+                    immediateMaxPossibleRightHandScore += goodScoreElement.maxPossibleCutScore * goodScoreElement.maxMultiplier;
                     break;
             }
 
