@@ -15,7 +15,7 @@ Configuration options can be changed in the Counters+ menu.
   - True (Default): Show the difference in accuracy versus no underswing
     - If you had a 97.5% and lost .05% to underswing, the counter would show -0.05%
   - False: Show what you would have if you had no underswing
-    - If you had a 97.5% and lost .05% to underswing, the counter would show 97.45%
+    - If you had a 97.5% and lost .05% to underswing, the counter would show 97.55%
 
 # Dependancies
 - BSIPA
