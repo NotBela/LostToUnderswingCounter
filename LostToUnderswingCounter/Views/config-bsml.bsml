@@ -2,6 +2,6 @@
 	<list-setting text="Seperate Hand Values" value="displayStyleValue" apply-on-change="true" options="displayStyleOptions"/>
 	<increment-setting text="Decimal Precision" value="decimalPrecisionValue" apply-on-change="true" min="0" max="5" integer-only="true"/>
 	<bool-setting text="Change counter colors to saber colors" value="inheritSaberColorsValue" apply-on-change="true"/>
-	<bool-setting text="Show Difference" value="compareUnderswinglessToCurrentValue" apply-on-change="true"/>
+	<list-setting text="Display Mode" value="displayModeValue" options="displayModeOptions" apply-on-change="true"/>
 	<bool-setting text="Show Counter Label" value="showCounterLabelValue" apply-on-change="true"/>
 </vertical>

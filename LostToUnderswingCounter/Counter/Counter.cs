@@ -1,7 +1,6 @@
 ﻿using System;
 using LostToUnderswingCounter.Configuration;
 using System.Globalization;
-using System.Windows.Forms;
 using TMPro;
 using UnityEngine;
 using Zenject;
@@ -53,20 +52,10 @@ namespace LostToUnderswingCounter.Counter
             if (PluginConfig.Instance.style == PluginConfig.styleType.Seperate || PluginConfig.Instance.style == PluginConfig.styleType.Both)
             {
                 leftText = CanvasUtility.CreateTextFromSettings(Settings, leftOffset);
-                leftText.text = $"-{0.ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}%";
                 leftText.alignment = TextAlignmentOptions.Left;
                 leftText.fontSize = 3;
 
                 rightText = CanvasUtility.CreateTextFromSettings(Settings, rightOffset);
-                rightText.text = $"-{0.ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}%";
-
-                if (!PluginConfig.Instance.showDifference)
-                {
-                    rightText.text = $"{100.ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}%";
-                    leftText.text = $"{100.ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}%";
-                }
-
-
                 rightText.alignment = TextAlignmentOptions.Right;
                 rightText.fontSize = 3;
 
@@ -80,10 +69,6 @@ namespace LostToUnderswingCounter.Counter
             if (PluginConfig.Instance.style == PluginConfig.styleType.Unified || PluginConfig.Instance.style == PluginConfig.styleType.Both)
             {
                 unifiedText = CanvasUtility.CreateTextFromSettings(Settings, unifiedOffset);
-                unifiedText.text = $"-{0.ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}%";
-
-                if (!PluginConfig.Instance.showDifference) unifiedText.text = $"{100.ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}%";
-
                 unifiedText.fontSize = 3;
             }
 
@@ -131,14 +116,25 @@ namespace LostToUnderswingCounter.Counter
 
                 var pointsLostToUnderswingRight = currentScoreWithoutUnderswingRight - currentScoreRight;
                 var percentLostToUnderswingRight = ((float)pointsLostToUnderswingRight / currentScoreRight) * 100;
-                // WORKS PROPERLY DONT CHANGE EVER
-                string leftString = $"-{percentLostToUnderswingLeft.ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}%";
-                string rightString = $"-{percentLostToUnderswingRight.ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}%";
 
-                if (!PluginConfig.Instance.showDifference)
+                string leftString = string.Empty, rightString = string.Empty;
+                switch (PluginConfig.Instance.display)
                 {
-                    leftString = $"{((((float)currentScoreWithoutUnderswingLeft / immediateMaxPossibleLeftHandScore) * 100) + percentLostToUnderswingLeft).ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}%";
-                    rightString = $"{((((float)currentScoreWithoutUnderswingRight / immediateMaxPossibleRightHandScore) * 100) + percentLostToUnderswingRight).ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}%";
+                    // WORKS PROPERLY DONT CHANGE EVER
+                    case PluginConfig.displayType.Difference:
+                    {
+                        leftString = $"-{percentLostToUnderswingLeft.ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}%";
+                        rightString = $"-{percentLostToUnderswingRight.ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}%";
+                        break;
+                    }
+                    case PluginConfig.displayType.Added:
+                        leftString = $"{(((float)currentScoreWithoutUnderswingLeft / immediateMaxPossibleLeftHandScore) * 100).ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}%";
+                        rightString = $"{(((float)currentScoreWithoutUnderswingRight / immediateMaxPossibleRightHandScore) * 100).ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}%";
+                        break;
+                    case PluginConfig.displayType.Points:
+                        leftString = $"{pointsLostToUnderswingLeft}";
+                        rightString = $"{pointsLostToUnderswingRight}";
+                        break;
                 }
 
                 leftText.text = leftString;
@@ -151,10 +147,19 @@ namespace LostToUnderswingCounter.Counter
 
                 var percentLostToUnderswing = ((float)pointsLostToUnderswing / immediateScore) * 100;
 
-                string unifiedString = $"-{percentLostToUnderswing.ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}%";
-                if (!PluginConfig.Instance.showDifference)
+                string unifiedString = string.Empty;
+                
+                switch (PluginConfig.Instance.display)
                 {
-                    unifiedString = $"{(((float)currentScoreWithoutUnderswing / scoreController.immediateMaxPossibleMultipliedScore) * 100).ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}%";
+                    case PluginConfig.displayType.Difference:
+                        unifiedString = $"-{percentLostToUnderswing.ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}%";
+                        break;
+                    case PluginConfig.displayType.Added:
+                        unifiedString = $"{(((float)currentScoreWithoutUnderswing / scoreController.immediateMaxPossibleMultipliedScore) * 100).ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}%";
+                        break;
+                    case PluginConfig.displayType.Points:
+                        unifiedString = $"{pointsLostToUnderswing}";
+                        break;
                 }
 
                 unifiedText.text = unifiedString;

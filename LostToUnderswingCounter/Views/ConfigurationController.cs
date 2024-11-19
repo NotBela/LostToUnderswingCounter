@@ -13,47 +13,25 @@ namespace LostToUnderswingCounter.Views
             set => PluginConfig.Instance.decimalPrecision = value;
         }
 
-        [UIValue("compareUnderswinglessToCurrentValue")]
-        private bool compareUnderswingLessToCurrentObject
+        [UIValue("displayModeOptions")] private List<object> displayModeOptions = new List<object>()
+            { PluginConfig.displayType.Difference, PluginConfig.displayType.Added, PluginConfig.displayType.Points };
+        
+        [UIValue("displayModeValue")]
+        private object displayModeValue
         {
-            get => PluginConfig.Instance.showDifference;
-            set => PluginConfig.Instance.showDifference = value;
+            get => PluginConfig.Instance.display;
+            set => PluginConfig.Instance.display = (PluginConfig.displayType) value;
         }
 
         [UIValue("displayStyleValue")]
-        private object displayStyle
+        private object displayStyleValue
         {
-            get
-            {
-                switch (PluginConfig.Instance.style)
-                {
-                    case PluginConfig.styleType.Seperate:
-                        return "Seperate";
-                    case PluginConfig.styleType.Unified:
-                        return "Unified";
-                    default:
-                        return "Both";
-                }
-            }
-            set
-            {
-                switch (value)
-                {
-                    case "Seperate Hands":
-                        PluginConfig.Instance.style = PluginConfig.styleType.Seperate;
-                        return;
-                    case "Unify Hands":
-                        PluginConfig.Instance.style = PluginConfig.styleType.Unified;
-                        return;
-                    default:
-                        PluginConfig.Instance.style = PluginConfig.styleType.Both;
-                        return;
-                }
-            }
+            get => PluginConfig.Instance.style;
+            set => PluginConfig.Instance.style = (PluginConfig.styleType) value;
         }
 
         [UIValue("displayStyleOptions")]
-        private List<object> displayStyleOptions = new List<object>() { "Seperate Hands", "Unify Hands", "Both" };
+        private List<object> displayStyleOptions = new List<object>() { PluginConfig.styleType.Seperate, PluginConfig.styleType.Unified, PluginConfig.styleType.Both };
 
         [UIValue("inheritSaberColorsValue")]
         private bool inheritSaberColors
