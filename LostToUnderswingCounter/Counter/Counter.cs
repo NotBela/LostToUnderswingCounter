@@ -21,9 +21,9 @@ namespace LostToUnderswingCounter.Counter
         private int immediateMaxPossibleRightHandScore = 0;
         private int immediateScore => currentScoreLeft + currentScoreRight;
 
-        [Inject] private readonly ScoreController scoreController;
-        [InjectOptional] private readonly GameplayCoreSceneSetupData gameplayCoreSceneSetupData;
-
+        [Inject] private readonly ScoreController scoreController = null;
+        [InjectOptional] private readonly GameplayCoreSceneSetupData gameplayCoreSceneSetupData = null;
+        
         private TMP_Text leftText;
         private TMP_Text rightText;
         private TMP_Text unifiedText;
@@ -71,6 +71,13 @@ namespace LostToUnderswingCounter.Counter
                 unifiedText = CanvasUtility.CreateTextFromSettings(Settings, unifiedOffset);
                 unifiedText.fontSize = 3;
             }
+            // last check is required for some reason or else unifiedtext dissapears ???
+            if (gameplayCoreSceneSetupData?.beatmapKey.beatmapCharacteristic.serializedName == "OneSaber" && PluginConfig.Instance.style != PluginConfig.styleType.Unified)
+            {
+                rightText.gameObject.SetActive(gameplayCoreSceneSetupData.playerSpecificSettings.leftHanded);
+                leftText.gameObject.SetActive(!gameplayCoreSceneSetupData.playerSpecificSettings.leftHanded);
+            }
+            
             updateText();
             scoreController.scoringForNoteFinishedEvent += calculateAccuracy;
         }
