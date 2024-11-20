@@ -72,7 +72,8 @@ namespace LostToUnderswingCounter.Counter
                 unifiedText.fontSize = 3;
             }
             // last check is required for some reason or else unifiedtext dissapears ???
-            if (gameplayCoreSceneSetupData?.beatmapKey.beatmapCharacteristic.serializedName == "OneSaber" && PluginConfig.Instance.style != PluginConfig.styleType.Unified)
+            if (gameplayCoreSceneSetupData?.beatmapKey.beatmapCharacteristic.serializedName == "OneSaber" && 
+                PluginConfig.Instance.style != PluginConfig.styleType.Unified)
             {
                 rightText.gameObject.SetActive(gameplayCoreSceneSetupData.playerSpecificSettings.leftHanded);
                 leftText.gameObject.SetActive(!gameplayCoreSceneSetupData.playerSpecificSettings.leftHanded);
