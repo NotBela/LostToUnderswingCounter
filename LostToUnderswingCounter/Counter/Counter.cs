@@ -71,7 +71,7 @@ namespace LostToUnderswingCounter.Counter
                 unifiedText = CanvasUtility.CreateTextFromSettings(Settings, unifiedOffset);
                 unifiedText.fontSize = 3;
             }
-
+            updateText();
             scoreController.scoringForNoteFinishedEvent += calculateAccuracy;
         }
         
@@ -107,6 +107,8 @@ namespace LostToUnderswingCounter.Counter
             updateText();
         }
 
+        private float cleanNan(float value) => float.IsNaN(value) ? 0 : value;
+        
         private void updateText()
         {
             if (PluginConfig.Instance.style == PluginConfig.styleType.Seperate || PluginConfig.Instance.style == PluginConfig.styleType.Both)
@@ -122,14 +124,12 @@ namespace LostToUnderswingCounter.Counter
                 {
                     // WORKS PROPERLY DONT CHANGE EVER
                     case PluginConfig.displayType.Difference:
-                    {
-                        leftString = $"-{percentLostToUnderswingLeft.ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}%";
-                        rightString = $"-{percentLostToUnderswingRight.ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}%";
+                        leftString = $"-{cleanNan(percentLostToUnderswingLeft).ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}%";
+                        rightString = $"-{cleanNan(percentLostToUnderswingRight).ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}%";
                         break;
-                    }
                     case PluginConfig.displayType.Added:
-                        leftString = $"{(((float)currentScoreWithoutUnderswingLeft / immediateMaxPossibleLeftHandScore) * 100).ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}%";
-                        rightString = $"{(((float)currentScoreWithoutUnderswingRight / immediateMaxPossibleRightHandScore) * 100).ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}%";
+                        leftString = $"{((cleanNan((float)currentScoreWithoutUnderswingLeft / immediateMaxPossibleLeftHandScore) * 100)).ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}%";
+                        rightString = $"{((cleanNan((float)currentScoreWithoutUnderswingRight / immediateMaxPossibleRightHandScore) * 100)).ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}%";
                         break;
                     case PluginConfig.displayType.Points:
                         leftString = $"{pointsLostToUnderswingLeft}";
@@ -152,10 +152,10 @@ namespace LostToUnderswingCounter.Counter
                 switch (PluginConfig.Instance.display)
                 {
                     case PluginConfig.displayType.Difference:
-                        unifiedString = $"-{percentLostToUnderswing.ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}%";
+                        unifiedString = $"-{cleanNan(percentLostToUnderswing).ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}%";
                         break;
                     case PluginConfig.displayType.Added:
-                        unifiedString = $"{(((float)currentScoreWithoutUnderswing / scoreController.immediateMaxPossibleMultipliedScore) * 100).ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}%";
+                        unifiedString = $"{(cleanNan((float)currentScoreWithoutUnderswing / scoreController.immediateMaxPossibleMultipliedScore) * 100).ToString($"F{PluginConfig.Instance.decimalPrecision}", CultureInfo.InvariantCulture)}%";
                         break;
                     case PluginConfig.displayType.Points:
                         unifiedString = $"{pointsLostToUnderswing}";
