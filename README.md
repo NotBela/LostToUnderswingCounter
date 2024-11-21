@@ -11,12 +11,12 @@ Configuration options can be changed in the Counters+ menu.
     - Both: Show both seperated and unified hand values (Default)
 - Decimal Precision: Change how precise the values shown are (Default: 2)
 - Change Counter Colors to Saber Colors: Change the text color to match the saber colors. Only applies to Seperate hand values! (Default: True)
-- Show Difference
-  - True (Default): Show the difference in accuracy versus no underswing
+- Display Mode:
+  - Difference (Default): Show the difference in accuracy versus no underswing
     - If you had a 97.5% and lost .05% to underswing, the counter would show -0.05%
-  - False: Show what you would have if you had no underswing
+  - Added: Show what you would have if you had no underswing
     - If you had a 97.5% and lost .05% to underswing, the counter would show 97.55%
-
+  - Points: Show the amount of points you lose to underswing
 # Dependancies
 - BSIPA
 - Counters+
